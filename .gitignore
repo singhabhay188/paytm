@@ -9,6 +9,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+temp.js
+package-lock.json
+package.json
 
 dist
 dist-ssr
