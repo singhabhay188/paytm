@@ -1,19 +1,20 @@
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-function authMiddle(req,res,next){
-    const token = req.headers?.auth;
+function authMiddle(req, res, next) {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1]; // Extract token after 'Bearer '
 
-    if(!token){
-        return res.status(403).json({'error':"Authentication Problem"});
+    if (!token) {
+        return res.status(401).json({ error: "Authentication token missing" });
     }
 
     try {
-        var decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.userId = decoded.userId;
         next();
-    }
-    catch(err) {
-        res.status(403).json({'error':"Authentication Problem"});
+    } catch (err) {
+        console.error("Authentication error:", err); // Log error for debugging
+        res.status(401).json({ error: "Invalid or expired token" });
     }
 }
 
