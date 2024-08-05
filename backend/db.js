@@ -32,7 +32,7 @@ const balanceSchema = new mongoose.Schema({
         ref:'User',
         required:true
     },
-    amount:{
+    balance:{
         type:Number,
         required:true
     }

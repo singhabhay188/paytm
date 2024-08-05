@@ -9,6 +9,7 @@ const userRouter = express.Router();
 
 userRouter.post('/signup',async (req,res)=>{
     const body = req.body;
+
     const result = signupSchema.safeParse(body);
 
     if(!result.success){
@@ -31,7 +32,7 @@ userRouter.post('/signup',async (req,res)=>{
 
     const nbalance = new Balance({
         userId: nuser._id,
-        amount: 1000
+        balance: 1000
     });
     await nbalance.save();
 
@@ -59,14 +60,13 @@ userRouter.post('/login',async (req,res)=>{
 });
 
 userRouter.get('/find',authMiddle,async (req,res)=>{
-    const name = req.query.name;
-
-    console.log(name);
+    let name = req.query.name;
+    name = name.toLowerCase();
 
     let users = await User.find({
         $or:[
-            {firstName:{$regex:name}},
-            {lastName:{$regex:name}}
+            {firstName:{$regex:name, $options: 'i'}},
+            {lastName:{$regex:name, $options: 'i'}}
         ]
     }).limit(10);
 
@@ -80,7 +80,6 @@ userRouter.get('/find',authMiddle,async (req,res)=>{
     });
 
     users = users.filter(user=>{
-        console.log(user.userId);
         return user.userId !== req.userId;
     });
 
